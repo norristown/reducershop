@@ -37,55 +37,12 @@ function App() {
         throw new Error("action unknown");
     }
   }
-  function cartReducer(state, action) {
-    switch (action.type) {
-      case "ADD_ITEM":
-        if (state.items.find((item) => item.id === action.payload.id)) {
-          // If the item already exists in the cart, update the quantity
-          const updatedItems = state.items.map((item) =>
-            item.id === action.payload.id
-              ? { ...item, quantity: item.quantity + action.payload.quantity }
-              : item
-          );
-
-          return {
-            ...state,
-            items: updatedItems,
-            total: state.total + action.payload.price * action.payload.quantity,
-          };
-        } else {
-          // If the item is not in the cart, add it
-          return {
-            ...state,
-            items: [...state.items, action.payload],
-            total: state.total + action.payload.price * action.payload.quantity,
-          };
-        }
-
-      case "REMOVE_ITEM":
-        return {
-          ...state,
-          items: state.items.filter((item) => item.id !== action.payload.id),
-          total: state.total - action.payload.price * action.payload.quantity,
-        };
-
-      case "CLEAR_CART":
-        return initialState;
-
-      default:
-        return state;
-    }
-  }
 
   useEffect(function () {
-    // const controller = new AbortController();
     async function fetchAPI() {
       try {
         setIsLoading(true);
-        const res = await fetch(
-          "https://fakestoreapi.com/products"
-          // {signal: controller.signal,}
-        );
+        const res = await fetch("https://fakestoreapi.com/products");
 
         if (!res.ok) throw new Error("Something went wrong");
         const data = await res.json();
@@ -97,15 +54,8 @@ function App() {
         setIsLoading(false);
       }
     }
-    // fetch("https://fakestoreapi.com/products")
-    //   .then((res) => res.json())
-    //   .then((data) => dispatch({ type: "dataReceived", payload: data }))
-    //   .catch((err) => dispatch({ type: "dataFailed" }));
-    fetchAPI();
 
-    // return function () {
-    //   controller.abort();
-    // };
+    fetchAPI();
   }, []);
   return (
     <>
@@ -134,13 +84,18 @@ function StorePage({ data, dispatch, itemQuan, onSetItemQuan }) {
     );
   }
   return (
-    <div className="text-center">
+    <div className="grid grid-cols-4 gap-4">
       {data.map((x) => (
-        <div key={x.id}>
+        <div
+          className="flex flex-col items-center justify-between border rounded-lg"
+          key={x.id}
+        >
           <p>Title: {x.title}</p>
-          <p>Price: {x.price}</p>
-          <div>
-            <div className="text-center">
+
+          <img src={x.image} width={200} />
+
+          <div className="grid grid-cols-3 items-center justify-center px-4 mt-4">
+            <div className="">
               <button className="focus:outline-none text-white bg-stone-600 hover:bg-stone-700  font-medium rounded text-sm px-2 mr-2 mb-2 ">
                 -
               </button>
@@ -156,9 +111,10 @@ function StorePage({ data, dispatch, itemQuan, onSetItemQuan }) {
                 +
               </button>
             </div>
+            <p>Price: {x.price}</p>
             <button
               id={x.id}
-              className="focus:outline-none text-white bg-green-600 hover:bg-green-700  font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 w-1/3"
+              className="w-full focus:outline-none text-white bg-green-600 hover:bg-green-700  font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 w-1/3"
               onClick={() =>
                 dispatch({
                   type: "ADD_ITEM",
