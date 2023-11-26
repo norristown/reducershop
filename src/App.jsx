@@ -84,55 +84,58 @@ function StorePage({ data, dispatch, itemQuan, onSetItemQuan }) {
     );
   }
   return (
-    <div className="grid grid-cols-4 gap-4">
-      {data.map((x) => (
-        <div
-          className="flex flex-col items-center justify-between border rounded-lg"
-          key={x.id}
-        >
-          <p>Title: {x.title}</p>
+    <main className="container mx-auto">
+      {" "}
+      <div className="grid grid-cols-4 gap-4 mx-auto">
+        {data.map((x) => (
+          <div
+            className="flex flex-col items-center justify-between border rounded-lg"
+            key={x.id}
+          >
+            <p className="text-center font-semibold mb-2">{x.title}</p>
 
-          <img src={x.image} width={200} />
+            <img src={x.image} width={200} />
 
-          <div className="grid grid-cols-3 items-center justify-center px-4 mt-4">
-            <div className="">
-              <button className="focus:outline-none text-white bg-stone-600 hover:bg-stone-700  font-medium rounded text-sm px-2 mr-2 mb-2 ">
-                -
-              </button>
-              <input
-                className="text-stone-900 w-1/12 text-center mr-2"
-                value={displayQuan(x)}
-                onChange={(e) => handleChange(x.id, e)}
-              ></input>
+            <div className="flex flex-col items-center mt-4">
+              <div className="flex justify-center items-center">
+                <button className="focus:outline-none h-full text-white bg-stone-600 hover:bg-stone-700 font-medium rounded text-sm px-3 mr-2 mb-2 ">
+                  -
+                </button>
+                <input
+                  className="text-stone-900 mr-2 w-1/12 text-center"
+                  value={displayQuan(x)}
+                  onChange={(e) => handleChange(x.id, e)}
+                ></input>
+                <button
+                  className="focus:outline-none h-full text-white bg-green-600 hover:bg-green-700  font-medium rounded text-sm px-3 mr-2 mb-2 "
+                  id={x.id}
+                >
+                  +
+                </button>
+              </div>
+              <p className="my-2">Price: ${x.price}</p>
               <button
-                className="focus:outline-none text-white bg-green-600 hover:bg-green-700  font-medium rounded text-sm px-2 mr-2 mb-2 "
                 id={x.id}
+                className="focus:outline-none w-full text-white bg-green-600 hover:bg-green-700  font-medium rounded-lg text-sm px-3 py-2.5 mx-2 mb-2 "
+                onClick={() =>
+                  dispatch({
+                    type: "ADD_ITEM",
+                    payload: {
+                      id: x.id,
+                      title: x.title,
+                      price: x.price,
+                      quantity: 1,
+                    },
+                  })
+                }
               >
-                +
+                Add To Cart
               </button>
             </div>
-            <p>Price: {x.price}</p>
-            <button
-              id={x.id}
-              className="w-full focus:outline-none text-white bg-green-600 hover:bg-green-700  font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 w-1/3"
-              onClick={() =>
-                dispatch({
-                  type: "ADD_ITEM",
-                  payload: {
-                    id: x.id,
-                    title: x.title,
-                    price: x.price,
-                    quantity: 1,
-                  },
-                })
-              }
-            >
-              Add To Cart
-            </button>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </main>
   );
 }
 
